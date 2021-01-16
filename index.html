@@ -1,0 +1,272 @@
+<!doctype html>
+<html class="no-js" lang="es-419">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>Horarios</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="apple-touch-icon" href="icon.png">
+  <!-- Place favicon.ico in the root directory -->
+
+  <style type="text/css">
+    ul#container {
+      margin: 0 0 5rem 0;
+      list-style: none;
+      padding: 0;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: arial;
+      margin: 0 auto;
+      max-width: 100%;
+      padding: 1rem;
+      width: 800px;
+    }
+    #container > li * {
+      margin: 0;
+    }
+    #container > li {
+      margin: 0 0 2rem 0;
+      background: #F44336;
+      color: white;
+      padding: 1rem;
+      border-radius: 0.25rem;
+      transition: .3s;
+      cursor: pointer;
+    }
+    #container > li.ok {
+      background: #4CAF50;
+    }
+    #container > li.disabled {
+      opacity: 0.5;
+    }
+    select#usuario {
+      position: fixed;
+      bottom: 1rem;
+      right: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- INCIO layout:        7:40 pm -->
+  <!-- FIN layout:          8:35 pm -->
+  <!-- INCIO funcionalidad: 8:36 pm -->
+  <!-- FIN funcionalidad:   9:49 pm -->
+  <!-- INCIO UI/UX:         9:46 pm -->
+  <!-- FIN UI/UX:           12:49 pm -->
+  <select id="usuario">
+    <option value="1">Usuario 1</option>
+    <option value="2">Usuario 2</option>
+    <option value="3">Usuario 3</option>
+    <option value="4">Usuario 4</option>
+    <option value="5">Usuario 5</option>
+    <option value="6">Usuario 6</option>
+    <option value="7">Usuario 7</option>
+    <option value="8">Usuario 8</option>
+    <option value="9">Usuario 9</option>
+    <option value="10">Usuario 10</option>
+  </select>
+  <ul id="container"></ul>
+  <div id="container_toas"></div>
+  <script type="text/javascript">
+    // Globals
+    LIMIT = 3
+    MOTORCYCLISTS = null
+    HORARIOS = [
+      {
+        time: '8:00',
+        motorcyclist : []
+      },
+      {
+        time: '8:30',
+        motorcyclist : []
+      },
+      {
+        time: '9:00',
+        motorcyclist : []
+      },
+      {
+        time: '9:30',
+        motorcyclist : []
+      },
+      {
+        time: '10:00',
+        motorcyclist : []
+      },
+      {
+        time: '10:30',
+        motorcyclist : []
+      },
+      {
+        time: '11:00',
+        motorcyclist : []
+      },
+      {
+        time: '11:30',
+        motorcyclist : []
+      },
+      {
+        time: '12:00',
+        motorcyclist : []
+      },
+      {
+        time: '12:30',
+        motorcyclist : []
+      },
+      {
+        time: '13:00',
+        motorcyclist : []
+      },
+      {
+        time: '13:30',
+        motorcyclist : []
+      },
+      {
+        time: '14:00',
+        motorcyclist : []
+      },
+      {
+        time: '14:30',
+        motorcyclist : []
+      },
+      {
+        time: '15:00',
+        motorcyclist : []
+      },
+      {
+        time: '15:30',
+        motorcyclist : []
+      },
+      {
+        time: '16:00',
+        motorcyclist : []
+      },
+      {
+        time: '16:30',
+        motorcyclist : []
+      },
+      {
+        time: '17:00',
+        motorcyclist : []
+      },
+      {
+        time: '17:30',
+        motorcyclist : []
+      },
+      {
+        time: '18:00',
+        motorcyclist : []
+      },
+      {
+        time: '18:30',
+        motorcyclist : []
+      },
+      {
+        time: '19:00',
+        motorcyclist : []
+      },
+      {
+        time: '19:30',
+        motorcyclist : []
+      },
+      {
+        time: '20:00',
+        motorcyclist : []
+      }
+    ]
+    const templateMotorcyclist = motorcyclist => {
+      return `<div class="toas">
+                <img src="${motorcyclist.image}">
+                <p>Se te asigno a: <strong>${motorcyclist.name}</strong></p>
+                <p>${motorcyclist.phone}</p>
+              </div>`
+    }
+    const templatesSchedule = (item, index) => {
+      return `<li data-id="${index}">
+                <h2>${item.time}</h2>
+                <p class="availability">Disponibles: ${LIMIT - item.motorcyclist.length}</p>
+              </li>`
+    }
+    const updateAvailability = event => {
+      const $li           = event.target.tagName === 'LI' ? event.target : event.target.parentElement
+      const id            = parseInt($li.dataset.id)
+      const user          = $user.value
+      const motorcyclists = HORARIOS[id].motorcyclist
+      const add           = motorcyclists.find(item => item.user === user)
+      const disabled      = $li.classList.contains('disabled')
+      if (!disabled || add) {
+        if (!add) {
+          motorcyclists.push({
+            user: user,
+            motorcyclist: getMotorcyclist(motorcyclists)
+          })
+        } else {
+          const position = motorcyclists.indexOf(add)
+          motorcyclists.splice(position, 1)
+        }
+        updateLayout(add, $li, motorcyclists)
+      } else alert("Este horario ya no esta disponible")
+    }
+    const getMotorcyclist = motorcyclists =>{
+      let motorcyclist = MOTORCYCLISTS[0]
+      if (motorcyclists.length > 0) {
+        for (let index = 0; index < MOTORCYCLISTS.length; index++) {
+          let add = motorcyclists.find(item => item.motorcyclist === MOTORCYCLISTS[index])
+          if (!add) {
+            motorcyclist = MOTORCYCLISTS[index]
+            index        = MOTORCYCLISTS.length
+          }
+        }
+      }
+      return motorcyclist
+    }
+    const getMotorcyclists = () => {
+      const xhReq = new XMLHttpRequest()
+      xhReq.open("GET", "https://randomuser.me/api/?results=8", false)
+      xhReq.send(null)
+      const serverResponse = JSON.parse(xhReq.responseText)
+      const data = []
+      serverResponse.results.forEach(item => {
+        data.push({
+          name  : item.name.first + ' ' +  item.name.last,
+          phone : item.cell,
+          image : item.picture.thumbnail
+        })
+      })
+      return data
+    }
+    const updateLayout = (add, $li, motorcyclists) => {
+      if (!add)
+        $li.classList.add('ok')
+      else
+        $li.classList.remove('ok')
+      if (motorcyclists.length === LIMIT)
+        $li.classList.add('disabled')
+      else
+        $li.classList.remove('disabled')
+      if (LIMIT - motorcyclists.length !== 0)
+        message = `Disponible: ${LIMIT - motorcyclists.length}`
+      else
+        message = `Agotado`
+      $li.querySelector('.availability').innerHTML = message
+    }
+    // START
+    document.addEventListener("DOMContentLoaded", event => {
+      $user           = document.querySelector('#usuario')
+      $container      = document.querySelector('#container')
+      $containerToas  = document.querySelector('#container_toas')
+      MOTORCYCLISTS   = getMotorcyclists()
+      let scheduleHTML = ``
+      HORARIOS.forEach((item, index) => scheduleHTML += templatesSchedule(item, index))
+      $container.innerHTML = scheduleHTML
+      $items = document.querySelectorAll('#container > li')
+      $items.forEach(li => li.addEventListener('click', updateAvailability, false))
+    })
+  </script>
+</body>
+</html> 
