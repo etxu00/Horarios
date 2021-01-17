@@ -4,51 +4,102 @@
   <meta charset="utf-8">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <title>Horarios</title>
-  <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-
   <link rel="manifest" href="site.webmanifest">
-  <link rel="apple-touch-icon" href="icon.png">
-  <!-- Place favicon.ico in the root directory -->
-
   <style type="text/css">
-    ul#container {
-      margin: 0 0 5rem 0;
-      list-style: none;
-      padding: 0;
-    }
     * {
       box-sizing: border-box;
+      transition: .25s;
     }
     body {
       font-family: arial;
       margin: 0 auto;
       max-width: 100%;
       padding: 1rem;
-      width: 800px;
     }
-    #container > li * {
+    .goodnight body {
+      background: #212121;
+      color: #E0E0E0;
+    }
+    .goodnight .container > li,
+    .goodnight .container > li.ok {
+      background: transparent;
+      color: inherit;
+    }
+    .goodnight .container > li.ok {
+      color: #4CAF50;
+    }
+    .goodnight .container > li.disabled {
+      border-color: black;
+    }
+    .goodnight .toas {
+      background: black;
+    }
+    .container {
+      margin: 0 0 50vh 0;
+      list-style: none;
+      padding: 0;
+    }
+    .container > li * {
       margin: 0;
     }
-    #container > li {
-      margin: 0 0 2rem 0;
+    .container > li {
       background: #F44336;
-      color: white;
-      padding: 1rem;
       border-radius: 0.25rem;
-      transition: .3s;
+      border: 1px solid #F44336;
+      color: white;
       cursor: pointer;
+      margin: 0 auto 2rem auto;
+      max-width: 100%;
+      padding: 1rem;
+      transition: .3s;
+      width: 400px;
     }
-    #container > li.ok {
+    .container > li h2 {
+	    font-weight: normal;
+	    font-family: monospace;
+	    margin: 0 0 0.25rem 0 !important;
+	    font-size: 2rem;
+    }
+    .container > li.ok {
       background: #4CAF50;
+      border-color: #4CAF50;
     }
-    #container > li.disabled {
+    .container > li.disabled {
       opacity: 0.5;
     }
     select#usuario {
       position: fixed;
       bottom: 1rem;
       right: 1rem;
+    }
+    .container_toas {
+      position: fixed;
+      left: 0;
+      margin: 1rem;
+      bottom: 0;
+    }
+    .toas {
+      background: #212121;
+      border-radius: 0.25rem;
+      color: white;
+      padding: 1rem;
+    }
+    .toast img {
+      float: left;
+    }
+    .toas img {
+      border-radius: 50%;
+      float: left;
+      margin: 0 1rem 0 0;
+    }
+    .toas p {
+      margin: 0;
+      font-size: 12px;
+      opacity: 0.9;
+    }
+    .toas p strong {
+      font-size: 16px;
     }
   </style>
 </head>
@@ -71,11 +122,11 @@
     <option value="9">Usuario 9</option>
     <option value="10">Usuario 10</option>
   </select>
-  <ul id="container"></ul>
-  <div id="container_toas"></div>
+  <ul id="container" class="container"></ul>
+  <div id="container_toas" class="container_toas"></div>
   <script type="text/javascript">
     // Globals
-    LIMIT = 3
+    LIMIT         = 3
     MOTORCYCLISTS = null
     HORARIOS = [
       {
@@ -201,10 +252,12 @@
       const disabled      = $li.classList.contains('disabled')
       if (!disabled || add) {
         if (!add) {
+          const motorcyclist = getMotorcyclist(motorcyclists)
           motorcyclists.push({
             user: user,
-            motorcyclist: getMotorcyclist(motorcyclists)
+            motorcyclist: motorcyclist
           })
+          showToast(motorcyclist)
         } else {
           const position = motorcyclists.indexOf(add)
           motorcyclists.splice(position, 1)
@@ -254,6 +307,14 @@
       else
         message = `Agotado`
       $li.querySelector('.availability').innerHTML = message
+    }
+    const showToast = motorcyclist => {
+      $containerToas.classList.add('on')
+      $containerToas.innerHTML = templateMotorcyclist(motorcyclist)
+      setTimeout(() => {
+        $containerToas.classList.remove('on')
+        setTimeout(() => $containerToas.innerHTML = '', 501)
+      }, 3000)
     }
     // START
     document.addEventListener("DOMContentLoaded", event => {
