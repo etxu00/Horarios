@@ -56,10 +56,10 @@
       width: 400px;
     }
     .container > li h2 {
-	    font-weight: normal;
-	    font-family: monospace;
-	    margin: 0 0 0.25rem 0 !important;
-	    font-size: 2rem;
+      font-weight: normal;
+      font-family: monospace;
+      margin: 0 0 0.25rem 0 !important;
+      font-size: 2rem;
     }
     .container > li.ok {
       background: #4CAF50;
@@ -68,16 +68,25 @@
     .container > li.disabled {
       opacity: 0.5;
     }
-    select#usuario {
+    .container_options {
       position: fixed;
-      bottom: 1rem;
-      right: 1rem;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      padding: 1rem;
+      border-top: 1px solid;
     }
     .container_toas {
       position: fixed;
-      left: 0;
-      margin: 1rem;
-      bottom: 0;
+      left: 1rem;
+      bottom: 5rem;
+    }
+    .container_options select {
+      background: transparent;
+      padding: 0.5rem;
+      border: 1px solid;
+      border-radius: 0.25rem;
     }
     .toas {
       background: #212121;
@@ -101,6 +110,20 @@
     .toas p strong {
       font-size: 16px;
     }
+    .container_more_actions {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        background: white;
+        padding: 1rem;
+        border: 1px solid;
+    }
+
+    .row {
+        display: flex;
+        flex-direction: row-reverse;
+        margin: 0 0 1rem 0;
+    }
   </style>
 </head>
 <body>
@@ -110,23 +133,36 @@
   <!-- FIN funcionalidad:   9:49 pm -->
   <!-- INCIO UI/UX:         9:46 pm -->
   <!-- FIN UI/UX:           12:49 pm -->
-  <select id="usuario">
-    <option value="1">Usuario 1</option>
-    <option value="2">Usuario 2</option>
-    <option value="3">Usuario 3</option>
-    <option value="4">Usuario 4</option>
-    <option value="5">Usuario 5</option>
-    <option value="6">Usuario 6</option>
-    <option value="7">Usuario 7</option>
-    <option value="8">Usuario 8</option>
-    <option value="9">Usuario 9</option>
-    <option value="10">Usuario 10</option>
-  </select>
+  <div class="container_options">
+    <select id="usuario">
+      <option value="1">Usuario 1</option>
+      <option value="2">Usuario 2</option>
+      <option value="3">Usuario 3</option>
+      <option value="4">Usuario 4</option>
+      <option value="5">Usuario 5</option>
+      <option value="6">Usuario 6</option>
+      <option value="7">Usuario 7</option>
+      <option value="8">Usuario 8</option>
+      <option value="9">Usuario 9</option>
+      <option value="10">Usuario 10</option>
+    </select>
+    <div class="container_more_actions">
+      <div class="row">
+        <input type="number" value="8">
+        <span>Limite de motociclistas:</span>
+      </div>
+      <div class="row">
+        <span>Tema:</span>
+        <input id="btn_theme" type="checkbox">
+        <div class="icon"></div>
+      </div>
+    </div>
+  </div>
   <ul id="container" class="container"></ul>
   <div id="container_toas" class="container_toas"></div>
   <script type="text/javascript">
     // Globals
-    LIMIT         = 3
+    LIMIT         = 8
     MOTORCYCLISTS = null
     HORARIOS = [
       {
@@ -243,6 +279,14 @@
                 <p class="availability">Disponibles: ${LIMIT - item.motorcyclist.length}</p>
               </li>`
     }
+    const toogleTheme = event => {
+      const $input = event.target
+      const $html  = document.querySelector('html')
+      if ($input.checked)
+        $html.classList.add('goodnight')
+      else
+        $html.classList.remove('goodnight')
+    }
     const updateAvailability = event => {
       const $li           = event.target.tagName === 'LI' ? event.target : event.target.parentElement
       const id            = parseInt($li.dataset.id)
@@ -320,6 +364,7 @@
     document.addEventListener("DOMContentLoaded", event => {
       $user           = document.querySelector('#usuario')
       $container      = document.querySelector('#container')
+      $btnTheme       = document.querySelector('#btn_theme')
       $containerToas  = document.querySelector('#container_toas')
       MOTORCYCLISTS   = getMotorcyclists()
       let scheduleHTML = ``
@@ -327,6 +372,7 @@
       $container.innerHTML = scheduleHTML
       $items = document.querySelectorAll('#container > li')
       $items.forEach(li => li.addEventListener('click', updateAvailability, false))
+      $btnTheme.addEventListener('change', toogleTheme, false)
     })
   </script>
 </body>
