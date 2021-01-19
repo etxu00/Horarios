@@ -85,7 +85,8 @@
     .container_options select {
       background: transparent;
       padding: 0.5rem;
-      border: 1px solid;
+      color: inherit;
+      border: 1px solid inherit;
       border-radius: 0.25rem;
     }
     .toas {
@@ -110,19 +111,76 @@
     .toas p strong {
       font-size: 16px;
     }
-    .container_more_actions {
-        position: absolute;
-        bottom: 0;
-        right: 0;
-        background: white;
-        padding: 1rem;
-        border: 1px solid;
+    .goodnight .container_options,
+    .goodnight .container_more_actions {
+      background: #212121;
+      color: #E0E0E0;
     }
-
+    .container_more_actions {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      background: white;
+      padding: 1rem;
+      border: 1px solid;
+      border-radius: 5px 5px 0 0;
+      transform: translateY(5rem);
+      border-color: transparent;
+    }
     .row {
-        display: flex;
-        flex-direction: row-reverse;
-        margin: 0 0 1rem 0;
+      display: flex;
+      flex-direction: row-reverse;
+      margin: 0 0 1rem 0;
+    }
+    .icon {
+      width: 2.25rem;
+      height: 1.25rem;
+      border: 1.5px solid;
+      border-radius: 1rem;
+      margin: 0 0.5rem;
+      position: relative;
+      overflow: hidden;
+      background: #212121;
+    }
+    .icon:before,
+    .icon:after {
+      content: '';
+      width: 1rem;
+      height: 1rem;
+      background: white;
+      position: absolute;
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      border-radius: 50%;
+      transition: .15s;
+    }
+    .icon:after {
+      transform: translateX(100%);
+      background: #212121;
+    }
+    input#btn_theme:checked + .icon:before {
+      transform: translateX(100%);
+    }
+    input#btn_theme:checked + .icon:after {
+      transform: translateX(67%);
+    }
+    .container_more_actions:hover {
+      transform: translateY(0rem);
+      border-color: inherit;
+    }
+    .container_more_actions * {
+      opacity: 0;
+    }
+    .container_more_actions:hover * {
+      opacity: 1;
+    }
+    .container_more_actions:before {
+      content: 'Más opciones';
+      padding: 0 0 1rem 0;
+      display: block;
+      text-align: right;
     }
   </style>
 </head>
@@ -148,14 +206,14 @@
     </select>
     <div class="container_more_actions">
       <div class="row">
-        <input type="number" value="8">
+        <input type="number" value="8" max="8" min="0">
         <span>Limite de motociclistas:</span>
       </div>
-      <div class="row">
-        <span>Tema:</span>
-        <input id="btn_theme" type="checkbox">
+      <label class="row">
+        <input id="btn_theme" type="checkbox" hidden>
         <div class="icon"></div>
-      </div>
+        <span>Tema:</span>
+      </label>
     </div>
   </div>
   <ul id="container" class="container"></ul>
