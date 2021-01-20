@@ -386,18 +386,27 @@
     }
     const getMotorcyclists = () => {
       const xhReq = new XMLHttpRequest()
-      xhReq.open("GET", "https://randomuser.me/api/?results=8", false)
+      const url   = 'https://randomuser.me/api/?results=' + LIMIT
+      xhReq.open("GET", url, false)
       xhReq.send(null)
-      const serverResponse = JSON.parse(xhReq.responseText)
-      const data = []
-      serverResponse.results.forEach(item => {
-        data.push({
-          name  : item.name.first + ' ' +  item.name.last,
-          phone : item.cell,
-          image : item.picture.thumbnail
+      if (xhReq.status === 200) {
+        const serverResponse = JSON.parse(xhReq.responseText)
+        const data = []
+        serverResponse.results.forEach(item => {
+          data.push({
+            name  : item.name.first + ' ' +  item.name.last,
+            phone : item.cell,
+            image : item.picture.thumbnail
+          })
         })
-      })
-      return data
+        return data
+      } else {
+        if (confirm("Error: Hubo un problema con la API")) {
+          window.location.reload()
+        } else {
+          return false
+        }
+      }
     }
     const updateLayout = (add, $li, motorcyclists) => {
       if (!add)
